@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2024 by anonymous (http://jsbin.com/daluwiziro/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculateur d'Investissement en Parfumerie</title>
+    <!-- Inclusion de Bootstrap pour le style -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Votre fichier CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Inclusion de Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style id="jsbin-css">
+body {
+    background-color: #f0e6f6;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: #4b0082; /* Couleur violet foncé */
+}
+
+#results {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #4b0082;
+}
+
+.btn-primary {
+    background-color: #6a0dad;
+    border-color: #6a0dad;
+}
+
+.btn-primary:hover {
+    background-color: #5a009d;
+    border-color: #5a009d;
+}
+
+.mt-5 {
+    margin-top: 3rem !important;
+}
+
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Calculateur d'Investissement en Parfumerie</h1>
+        <form id="investment-form">
+            <!-- Investissement initial (CAPEX) -->
+            <h3>Investissement Initial (CAPEX)</h3>
+            <div class="form-group">
+                <label for="equipmentCost">Coût des équipements (€)</label>
+                <input type="number" class="form-control" id="equipmentCost" required>
+            </div>
+            <div class="form-group">
+                <label for="initialStockCost">Coût des stocks initiaux (€)</label>
+                <input type="number" class="form-control" id="initialStockCost" required>
+            </div>
+            <div class="form-group">
+                <label for="locationCost">Coût des locaux (€)</label>
+                <input type="number" class="form-control" id="locationCost" required>
+            </div>
+            <div class="form-group">
+                <label for="initialMarketingCost">Coût du marketing initial (€)</label>
+                <input type="number" class="form-control" id="initialMarketingCost" required>
+            </div>
+            <div class="form-group">
+                <label for="websiteDevelopmentCost">Coût du développement du site web (€)</label>
+                <input type="number" class="form-control" id="websiteDevelopmentCost" required>
+            </div>
+            <div class="form-group">
+                <label for="otherInitialCosts">Autres frais initiaux (€)</label>
+                <input type="number" class="form-control" id="otherInitialCosts" required>
+            </div>
+
+            <!-- Coûts d'exploitation annuels (OPEX) -->
+            <h3>Coûts d'Exploitation Annuels (OPEX)</h3>
+            <div class="form-group">
+                <label for="salariesCost">Coût des salaires (€)</label>
+                <input type="number" class="form-control" id="salariesCost" required>
+            </div>
+            <div class="form-group">
+                <label for="rawMaterialsCost">Coût des matières premières (€)</label>
+                <input type="number" class="form-control" id="rawMaterialsCost" required>
+            </div>
+            <div class="form-group">
+                <label for="recurringMarketingCost">Coût du marketing récurrent (€)</label>
+                <input type="number" class="form-control" id="recurringMarketingCost" required>
+            </div>
+            <div class="form-group">
+                <label for="equipmentMaintenanceCost">Coût de la maintenance des équipements (€)</label>
+                <input type="number" class="form-control" id="equipmentMaintenanceCost" required>
+            </div>
+            <div class="form-group">
+                <label for="otherVariableCosts">Autres coûts variables (€)</label>
+                <input type="number" class="form-control" id="otherVariableCosts" required>
+            </div>
+
+            <!-- Paramètres de revenus -->
+            <h3>Paramètres de Revenus</h3>
+            <div class="form-group">
+                <label for="averageSellingPrice">Prix de vente moyen (€)</label>
+                <input type="number" class="form-control" id="averageSellingPrice" required>
+            </div>
+            <div class="form-group">
+                <label for="grossMargin">Marge brute (%)</label>
+                <input type="number" class="form-control" id="grossMargin" required>
+            </div>
+            <div class="form-group">
+                <label for="estimatedSalesVolume">Ventes annuelles estimées (scénario neutre)</label>
+                <input type="number" class="form-control" id="estimatedSalesVolume" required>
+            </div>
+            <div class="form-group">
+                <label for="pessimisticSalesVolume">Ventes annuelles pessimistes</label>
+                <input type="number" class="form-control" id="pessimisticSalesVolume" required>
+            </div>
+            <div class="form-group">
+                <label for="optimisticSalesVolume">Ventes annuelles optimistes</label>
+                <input type="number" class="form-control" id="optimisticSalesVolume" required>
+            </div>
+
+            <!-- Paramètres de simulation -->
+            <h3>Paramètres de Simulation</h3>
+            <div class="form-group">
+                <label for="demandGrowthMin">Croissance de la demande minimale (%)</label>
+                <input type="number" class="form-control" id="demandGrowthMin" required>
+            </div>
+            <div class="form-group">
+                <label for="demandGrowthMax">Croissance de la demande maximale (%)</label>
+                <input type="number" class="form-control" id="demandGrowthMax" required>
+            </div>
+            <div class="form-group">
+                <label for="costSavingsMin">Économies sur les coûts variables minimales (%)</label>
+                <input type="number" class="form-control" id="costSavingsMin" required>
+            </div>
+            <div class="form-group">
+                <label for="costSavingsMax">Économies sur les coûts variables maximales (%)</label>
+                <input type="number" class="form-control" id="costSavingsMax" required>
+            </div>
+            <div class="form-group">
+                <label for="maintenanceCostMin">Coûts imprévus d'entretien minimaux (€)</label>
+                <input type="number" class="form-control" id="maintenanceCostMin" required>
+            </div>
+            <div class="form-group">
+                <label for="maintenanceCostMax">Coûts imprévus d'entretien maximaux (€)</label>
+                <input type="number" class="form-control" id="maintenanceCostMax" required>
+            </div>
+            <div class="form-group">
+                <label for="desiredPaybackPeriod">Période d'amortissement souhaitée (années)</label>
+                <input type="number" class="form-control" id="desiredPaybackPeriod" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Calculer</button>
+        </form>
+
+        <div id="results" style="display: none;" class="mt-5">
+            <h2>Résultats de la Simulation</h2>
+            <p style="font-size: 1.2em;">Tu as une chance de réussite de <strong><span id="successProbability"></span>%</strong> !</p>
+            <p id="negativeProfitMessage" style="display: none; color: red; font-weight: bold;"></p>
+            <h3>EBITDA</h3>
+            <canvas id="ebitdaChart"></canvas>
+            <h3>ROI</h3>
+            <canvas id="roiChart"></canvas>
+            <h3>Période d'Amortissement</h3>
+            <canvas id="paybackChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Inclusion des scripts JavaScript -->
+    <!-- Bibliothèque math.js pour les calculs mathématiques -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.2/math.min.js"></script>
+    <!-- Votre fichier JavaScript -->
+    <script src="app.js"></script>
+<script id="jsbin-javascript">
+// Déclaration des variables globales pour les graphiques
+let ebitdaChart, roiChart, paybackChart;
+
+// Écouteur d'événement pour les cases à cocher
+document.getElementById('includeCapex').addEventListener('change', toggleSection);
+document.getElementById('includeOpex').addEventListener('change', toggleSection);
+document.getElementById('includeRevenueParams').addEventListener('change', toggleSection);
+document.getElementById('includeSimulationParams').addEventListener('change', toggleSection);
+
+// Fonction pour afficher ou masquer les sections
+function toggleSection() {
+    document.getElementById('capexSection').style.display = document.getElementById('includeCapex').checked ? 'block' : 'none';
+    document.getElementById('opexSection').style.display = document.getElementById('includeOpex').checked ? 'block' : 'none';
+    document.getElementById('revenueParamsSection').style.display = document.getElementById('includeRevenueParams').checked ? 'block' : 'none';
+    document.getElementById('simulationParamsSection').style.display = document.getElementById('includeSimulationParams').checked ? 'block' : 'none';
+}
+
+// Appeler la fonction au chargement de la page pour définir l'état initial
+toggleSection();
+
+// Écouteur d'événement pour le formulaire
+document.getElementById('investment-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Initialiser les variables avec des valeurs par défaut si les sections sont exclues
+    let initialInvestment = 0;
+    let variableCosts = 0;
+    let averageSellingPrice = 0;
+    let grossMargin = 0;
+    let estimatedSalesVolume = 0;
+    let demandGrowthMin = 0;
+    let demandGrowthMax = 0;
+    let costSavingsMin = 0;
+    let costSavingsMax = 0;
+    let maintenanceCostMin = 0;
+    let maintenanceCostMax = 0;
+    let desiredPaybackPeriod = 0;
+
+    // Récupérer les valeurs des champs si les sections correspondantes sont incluses
+    if (document.getElementById('includeCapex').checked) {
+        // Récupérer les valeurs des champs CAPEX
+        const equipmentCost = parseFloat(document.getElementById('equipmentCost').value) || 0;
+        const initialStockCost = parseFloat(document.getElementById('initialStockCost').value) || 0;
+        const locationCost = parseFloat(document.getElementById('locationCost').value) || 0;
+        const initialMarketingCost = parseFloat(document.getElementById('initialMarketingCost').value) || 0;
+        const websiteDevelopmentCost = parseFloat(document.getElementById('websiteDevelopmentCost').value) || 0;
+        const otherInitialCosts = parseFloat(document.getElementById('otherInitialCosts').value) || 0;
+
+        // Calcul de l'investissement initial total
+        initialInvestment = equipmentCost + initialStockCost + locationCost + initialMarketingCost + websiteDevelopmentCost + otherInitialCosts;
+    }
+
+    if (document.getElementById('includeOpex').checked) {
+        // Récupérer les valeurs des champs OPEX
+        const salariesCost = parseFloat(document.getElementById('salariesCost').value) || 0;
+        const rawMaterialsCost = parseFloat(document.getElementById('rawMaterialsCost').value) || 0;
+        const recurringMarketingCost = parseFloat(document.getElementById('recurringMarketingCost').value) || 0;
+        const equipmentMaintenanceCost = parseFloat(document.getElementById('equipmentMaintenanceCost').value) || 0;
+        const otherVariableCosts = parseFloat(document.getElementById('otherVariableCosts').value) || 0;
+
+        // Calcul des coûts variables annuels totaux
+        variableCosts = salariesCost + rawMaterialsCost + recurringMarketingCost + equipmentMaintenanceCost + otherVariableCosts;
+    }
+
+    if (document.getElementById('includeRevenueParams').checked) {
+        // Récupérer les autres paramètres
+        averageSellingPrice = parseFloat(document.getElementById('averageSellingPrice').value) || 0;
+        grossMargin = parseFloat(document.getElementById('grossMargin').value) / 100 || 0; // Convertir en décimal
+        estimatedSalesVolume = parseFloat(document.getElementById('estimatedSalesVolume').value) || 0;
+    }
+
+    if (document.getElementById('includeSimulationParams').checked) {
+        // Paramètres de simulation
+        demandGrowthMin = parseFloat(document.getElementById('demandGrowthMin').value) / 100 || 0;
+        demandGrowthMax = parseFloat(document.getElementById('demandGrowthMax').value) / 100 || 0;
+        costSavingsMin = parseFloat(document.getElementById('costSavingsMin').value) / 100 || 0;
+        costSavingsMax = parseFloat(document.getElementById('costSavingsMax').value) / 100 || 0;
+        maintenanceCostMin = parseFloat(document.getElementById('maintenanceCostMin').value) || 0;
+        maintenanceCostMax = parseFloat(document.getElementById('maintenanceCostMax').value) || 0;
+        desiredPaybackPeriod = parseFloat(document.getElementById('desiredPaybackPeriod').value) || 0;
+    }
+
+    // Créer un objet avec les paramètres
+    const params = {
+        initialInvestment,
+        variableCosts,
+        averageSellingPrice,
+        grossMargin,
+        estimatedSalesVolume,
+        demandGrowthMin,
+        demandGrowthMax,
+        costSavingsMin,
+        costSavingsMax,
+        maintenanceCostMin,
+        maintenanceCostMax,
+        desiredPaybackPeriod
+    };
+
+    // Exécuter les calculs
+    runCalculations(params);
+});
+
+// Fonction pour exécuter les calculs
+function runCalculations(params) {
+    const simulationResults = runMonteCarloSimulation(params);
+    const analysis = analyzeResults(simulationResults, params.desiredPaybackPeriod);
+    displayResults(analysis);
+}
+
+// Fonctions de base
+function calculateAnnualProfit(revenue, totalCosts) {
+    return revenue - totalCosts;
+}
+
+function calculateROI(initialInvestment, annualProfit) {
+    return (annualProfit / initialInvestment) * 100;
+}
+
+function calculatePaybackPeriod(initialInvestment, annualProfit) {
+    if (annualProfit <= 0) {
+        return Infinity; // Indique que l'investissement ne sera jamais amorti
+    }
+    return initialInvestment / annualProfit;
+}
+
+// Fonction de simulation Monte Carlo
+function runMonteCarloSimulation(params, iterations = 10000) {
+    const results = [];
+
+    for (let i = 0; i < iterations; i++) {
+        // Variables aléatoires
+        const demandGrowth = math.random(params.demandGrowthMin, params.demandGrowthMax);
+        const costSavings = math.random(params.costSavingsMin, params.costSavingsMax);
+        const maintenanceCosts = math.random(params.maintenanceCostMin, params.maintenanceCostMax);
+
+        // Volume de ventes ajusté
+        const adjustedSalesVolume = params.estimatedSalesVolume * (1 + demandGrowth);
+
+        // Coûts variables ajustés
+        const adjustedVariableCosts = params.variableCosts * (1 - costSavings);
+
+        // Coûts totaux
+        const totalCosts = adjustedVariableCosts + maintenanceCosts;
+
+        // Chiffre d'affaires
+        const revenue = adjustedSalesVolume * params.averageSellingPrice;
+
+        // Profit brut
+        const grossProfit = revenue * params.grossMargin;
+
+        // Profit annuel
+        const annualProfit = grossProfit - totalCosts;
+
+        // Calculs financiers
+        const roi = calculateROI(params.initialInvestment, annualProfit);
+        const paybackPeriod = calculatePaybackPeriod(params.initialInvestment, annualProfit);
+
+        results.push({
+            annualProfit,
+            roi,
+            paybackPeriod
+        });
+    }
+    return results;
+}
+
+// Fonction pour analyser les résultats
+function analyzeResults(results, desiredPaybackPeriod) {
+    const profits = results.map(r => r.annualProfit);
+    const rois = results.map(r => r.roi);
+    const paybackPeriods = results.map(r => r.paybackPeriod);
+
+    profits.sort((a, b) => a - b);
+    rois.sort((a, b) => a - b);
+    paybackPeriods.sort((a, b) => a - b);
+
+    const getPercentile = (data, percentile) => {
+        const index = Math.floor((percentile / 100) * data.length);
+        return data[Math.min(index, data.length - 1)];
+    };
+
+    const validPaybackPeriods = paybackPeriods.filter(p => p !== Infinity);
+    const successCount = validPaybackPeriods.filter(p => p <= desiredPaybackPeriod).length;
+    const successProbability = (successCount / results.length) * 100;
+
+    const negativeProfitCount = profits.filter(profit => profit <= 0).length;
+    const negativeProfitPercentage = (negativeProfitCount / results.length) * 100;
+
+    return {
+        profitPercentiles: {
+            '5th': getPercentile(profits, 5),
+            '50th': getPercentile(profits, 50),
+            '95th': getPercentile(profits, 95)
+        },
+        roiPercentiles: {
+            '5th': getPercentile(rois, 5),
+            '50th': getPercentile(rois, 50),
+            '95th': getPercentile(rois, 95)
+        },
+        paybackPeriodPercentiles: {
+            '5th': getPercentile(validPaybackPeriods, 5),
+            '50th': getPercentile(validPaybackPeriods, 50),
+            '95th': getPercentile(validPaybackPeriods, 95)
+        },
+        successProbability,
+        negativeProfitPercentage,
+        profits,
+        rois,
+        paybackPeriods: validPaybackPeriods
+    };
+}
+
+// Fonction pour afficher les résultats
+function displayResults(analysis) {
+    document.getElementById('results').style.display = 'block';
+
+    // Phrase conviviale pour le résultat
+    const successMessage = `D'après les paramètres que tu as définis, tu as **${analysis.successProbability.toFixed(2)}%** de chances de réussir ton projet !`;
+    document.getElementById('successMessage').innerHTML = successMessage;
+
+    // Afficher le message sur les profits négatifs
+    const negativeProfitElement = document.getElementById('negativeProfitMessage');
+    if (analysis.negativeProfitPercentage > 0) {
+        const negativeProfitMessage = `Attention : dans ${analysis.negativeProfitPercentage.toFixed(2)}% des scénarios, le profit annuel est négatif.`;
+        negativeProfitElement.innerText = negativeProfitMessage;
+        negativeProfitElement.style.display = 'block';
+    } else {
+        negativeProfitElement.style.display = 'none';
+    }
+
+    // Afficher les graphiques
+    displayCharts(analysis);
+}
+
+// Fonction pour afficher les graphiques
+function displayCharts(analysis) {
+    // EBITDA Chart
+    if (ebitdaChart) {
+        ebitdaChart.destroy();
+    }
+    const ebitdaCtx = document.getElementById('ebitdaChart').getContext('2d');
+    ebitdaChart = new Chart(ebitdaCtx, {
+        type: 'bar',
+        data: {
+            labels: ['5ᵉ percentile', 'Médiane', '95ᵉ percentile'],
+            datasets: [{
+                label: 'EBITDA (€)',
+                data: [
+                    analysis.profitPercentiles['5th'],
+                    analysis.profitPercentiles['50th'],
+                    analysis.profitPercentiles['95th']
+                ],
+                backgroundColor: '#ff6f61'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
+    // ROI Chart
+    if (roiChart) {
+        roiChart.destroy();
+    }
+    const roiCtx = document.getElementById('roiChart').getContext('2d');
+    roiChart = new Chart(roiCtx, {
+        type: 'bar',
+        data: {
+            labels: ['5ᵉ percentile', 'Médiane', '95ᵉ percentile'],
+            datasets: [{
+                label: 'ROI (%)',
+                data: [
+                    analysis.roiPercentiles['5th'],
+                    analysis.roiPercentiles['50th'],
+                    analysis.roiPercentiles['95th']
+                ],
+                backgroundColor: '#ff6f61'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
+    // Payback Period Chart
+    if (paybackChart) {
+        paybackChart.destroy();
+    }
+    const paybackCtx = document.getElementById('paybackChart').getContext('2d');
+    paybackChart = new Chart(paybackCtx, {
+        type: 'bar',
+        data: {
+            labels: ['5ᵉ percentile', 'Médiane', '95ᵉ percentile'],
+            datasets: [{
+                label: 'Période d\'amortissement (ans)',
+                data: [
+                    analysis.paybackPeriodPercentiles['5th'],
+                    analysis.paybackPeriodPercentiles['50th'],
+                    analysis.paybackPeriodPercentiles['95th']
+                ],
+                backgroundColor: '#ff6f61'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: Math.max(analysis.paybackPeriodPercentiles['95th'], 10)
+                }
+            }
+        }
+    });
+}
+
+</script>
+</body>
+</html>
